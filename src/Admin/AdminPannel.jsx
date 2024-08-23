@@ -5,6 +5,8 @@ import Header from "./Components/Header";
 import HomePage from "../Admin/Pages/HomePage";
 import LoginPage from "../Admin/Pages/LoginPage";
 import UsersPage from "../Admin/Pages/UsersPage";
+import UserDetailPage from "../Admin/Pages/UserDetailPage";
+import PartnerDetailPage from "../Admin/Pages/PartnerDetailPage"; 
 import PartnersPage from "./Pages/PartnersPage";
 import PublicationsPage from "./Pages/PublicationsPage";
 
@@ -15,7 +17,6 @@ function AdminPannel() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
 
-  // Update localStorage when isConnected changes
   React.useEffect(() => {
     localStorage.setItem("isConnected", isConnected);
   }, [isConnected]);
@@ -40,8 +41,16 @@ function AdminPannel() {
             element={isConnected ? <UsersPage /> : <LoginPage />}
           />
           <Route
+            path="/users/:userId" // Route for user details
+            element={isConnected ? <UserDetailPage /> : <LoginPage />}
+          />
+          <Route
             path="/partenaires"
             element={isConnected ? <PartnersPage /> : <LoginPage />}
+          />
+          <Route
+            path="/partners/:partnerId" // Route for partner details
+            element={isConnected ? <PartnerDetailPage /> : <LoginPage />}
           />
           <Route
             path="/publications"

@@ -1,46 +1,44 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 function UsersPage() {
-  const users = [
-    {
-      photo: "https://images.pexels.com/photos/1468379/pexels-photo-1468379.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      username: "Eya ",
-      email: "Eya@gmail.com",
-      role: "Explorateur",
-      status: "Active",
-    },
-    {
-      photo: "https://images.pexels.com/photos/4781443/pexels-photo-4781443.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      username: "Sara",
-      email: "sara@gmail.com",
-      role: "Explorateur",
-      status: "Inactive",
-    },
-    {
-      photo: "https://images.pexels.com/photos/810775/pexels-photo-810775.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      username: "Amine",
-      email: "Amine@gmail.com",
-      role: "Explorateur",
-      status: "Active",
-    },
-    {
-      photo: "https://images.pexels.com/photos/4919373/pexels-photo-4919373.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      username: "linda",
-      email: "linda@gmail.com",
-      role: "Explorateur",
-      status: "Inactive",
-    },
-  ];
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState(null);
+
+  // Fetch all users from the backend when the component mounts
+  useEffect(() => {
+    axios.get('http://localhost:3000/admin/users')
+      .then(response => {
+        setUsers(response.data);  // Set the fetched users in the state
+      })
+      .catch(error => {
+        setError("There was an error fetching the users!");
+        console.error(error);
+      });
+  }, []);
+
+  // Handle user deletion
+  const handleDelete = (userId) => {
+    axios.delete(`http://localhost:3000/admin/users/${userId}`)
+      .then(response => {
+        setUsers(users.filter(user => user._id !== userId));  // Remove the deleted user from the state
+      })
+      .catch(error => {
+        console.error("There was an error deleting the user!", error);
+      });
+  };
 
   return (
     <div>
       <div className="overflow-x-auto">
-        <h1 class="mb-4 py-4 text-sm text-center font-bold leading-none tracking-tight text-gray-900 md:text-2xl lg:text-3xl ">
+        <h1 className="mb-4 py-4 text-sm text-center font-bold leading-none tracking-tight text-gray-900 md:text-2xl lg:text-3xl">
           Our
-          <span class="ml-2 underline underline-offset-3 decoration-4 decoration-blue-400 ">
+          <span className="ml-2 underline underline-offset-3 decoration-4 decoration-blue-400">
             Explorateurs
           </span>
         </h1>
+        {error && <p className="text-red-500">{error}</p>}  {/* Display error message if any */}
         <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
           <thead>
             <tr>
@@ -56,19 +54,18 @@ function UsersPage() {
               <th className="px-6 py-3 bg-gray-100 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
                 Delete User
               </th>
-            
               <th className="px-6 py-3 bg-gray-100 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
-                Settings
+                See Details
               </th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
-              <tr key={index} className="border-b">
+            {users.map((user) => (
+              <tr key={user._id} className="border-b">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src={user.photo}
+                    src={user.image ? `http://localhost:3000${user.image}` : "https://via.placeholder.com/150"}
                     alt="User"
                   />
                 </td>
@@ -79,15 +76,14 @@ function UsersPage() {
                   {user.email}
                 </td>
                 <td className="px-10 py-4 whitespace-nowrap text-sm font-medium">
-                  <a href="#" className="text-red-600 hover:text-red-900">
+                  <button onClick={() => handleDelete(user._id)} className="text-red-600 hover:text-red-900">
                     Delete
-                  </a>
+                  </button>
                 </td>
-              
                 <td className="px-10 py-4 whitespace-nowrap text-sm font-medium">
-                  <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                    Edit
-                  </a>
+                  <Link to={`/users/${user._id}`} className="text-indigo-600 hover:text-indigo-900">
+                    See Details
+                  </Link>
                 </td>
               </tr>
             ))}

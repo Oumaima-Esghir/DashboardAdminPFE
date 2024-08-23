@@ -10,17 +10,31 @@ function LoginPage({ setIsConnected }) {
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here, you can add the logic for validating the admin credentials.
-    // For simplicity, we'll assume the login is successful.
-    if (email === "admin@gmail.com" && password === "admin123") {
-      // Set isConnected to true and save to localStorage
-      setIsConnected(true);
-      localStorage.setItem("isConnected", "true");
-      navigate("/home");
-    } else {
-      setError("Invalid email or password.");
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/signin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsConnected(true);
+        localStorage.setItem("isConnected", "true");
+        localStorage.setItem("token", data.user.token); // Save token if needed
+        navigate("/home");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "Invalid email or password.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setError("An error occurred. Please try again.");
     }
   };
 
