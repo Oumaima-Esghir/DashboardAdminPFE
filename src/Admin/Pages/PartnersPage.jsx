@@ -6,12 +6,12 @@ function PartnersPage() {
   const [partners, setPartners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Updated hook
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch partners from the backend
+    // Fetch partners from the backend using the environment variable
     axios
-      .get("http://localhost:3000/admin/partners")
+      .get(`${process.env.REACT_APP_API_URL}/admin/partners`)
       .then((response) => {
         setPartners(response.data);
         setLoading(false);
@@ -23,21 +23,24 @@ function PartnersPage() {
       });
   }, []);
 
-  const handleDelete = (id) => {
-    // Handle delete operation
-    axios
-      .delete(`http://localhost:3000/admin/partners/${id}`)
-      .then((response) => {
+  const handleDelete = async (id) => {
+    try {
+        await axios.delete(
+            `${process.env.REACT_APP_API_URL}/admin/partners/delete/${id}`
+        );
         setPartners(partners.filter((partner) => partner._id !== id));
-      })
-      .catch((error) => {
+        alert("Partner deleted successfully!");
+    } catch (error) {
         console.error("There was an error deleting the partner!", error);
-      });
-  };
+        alert(
+            `Failed to delete the partner: ${error.response?.data?.message || error.message}`
+        );
+    }
+};
+
 
   const handleSeeDetails = (id) => {
-    // Navigate to the partner detail page
-    navigate(`/partners/${id}`); // Updated navigation
+    navigate(`/partners/${id}`);
   };
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;

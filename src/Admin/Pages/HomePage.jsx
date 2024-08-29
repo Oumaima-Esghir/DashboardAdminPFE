@@ -35,15 +35,22 @@ function HomePage() {
   useEffect(() => {
     const fetchPublications = async () => {
       try {
+        // Start loading
+        setLoading(true);
+        // Make an API call to fetch publications
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/admin/pubs`);
+        // Update the state with the fetched data
         setPublications(response.data);
+        // Set loading to false as data fetching is done
+        setLoading(false);
       } catch (err) {
-        setError("Failed to fetch publications.");
-      } finally {
+        // If there's an error, set the error state
+        setError('Failed to fetch publications.');
         setLoading(false);
       }
     };
 
+    // Call the fetch function
     fetchPublications();
   }, []);
 
@@ -60,7 +67,7 @@ function HomePage() {
     acc[category] = (acc[category] || 0) + 1;
     return acc;
   }, {});
-
+  console.log("Category Distribution:", categories);
   // Convert category data to chart format
   const doughnutData = {
     labels: Object.keys(categories),
@@ -69,19 +76,23 @@ function HomePage() {
         label: "Publication Distribution by Category",
         data: Object.values(categories),
         backgroundColor: [
-          "rgba(54, 162, 235, 0.5)", // Blue
-          "rgba(255, 206, 86, 0.5)", // Yellow
-          "rgba(75, 192, 192, 0.5)", // Green
-          "rgba(255, 99, 132, 0.5)", // Pink
+          "rgba(54, 162, 235, 0.5)",  // Blue
+          "rgba(255, 206, 86, 0.5)",  // Yellow
+          "rgba(75, 192, 192, 0.5)",  // Green
+          "rgba(255, 99, 132, 0.5)",  // Pink
           "rgba(153, 102, 255, 0.5)", // Purple
-        ],
-        borderColor: [
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(255, 99, 132, 1)",
-          "rgba(153, 102, 255, 1)",
-        ],
+          "rgba(255, 165, 0, 0.5)",   // Orange
+          "rgba(255, 99, 71, 0.5)"    // Red (new)
+      ],
+      borderColor: [
+          "rgba(54, 162, 235, 1)",    // Blue
+          "rgba(255, 206, 86, 1)",    // Yellow
+          "rgba(75, 192, 192, 1)",    // Green
+          "rgba(255, 99, 132, 1)",    // Pink
+          "rgba(153, 102, 255, 1)",   // Purple
+          "rgba(255, 140, 0, 1)",     // Darker Orange
+          "rgba(255, 69, 0, 1)"       // Darker Red (new)
+      ],
         borderWidth: 1,
       },
     ],

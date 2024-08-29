@@ -8,7 +8,7 @@ function UsersPage() {
 
   // Fetch all users from the backend when the component mounts
   useEffect(() => {
-    axios.get('http://localhost:3000/admin/users')
+    axios.get(`${process.env.REACT_APP_API_URL}/admin/users`)
       .then(response => {
         setUsers(response.data);  // Set the fetched users in the state
       })
@@ -19,14 +19,15 @@ function UsersPage() {
   }, []);
 
   // Handle user deletion
-  const handleDelete = (userId) => {
-    axios.delete(`http://localhost:3000/admin/users/${userId}`)
-      .then(response => {
-        setUsers(users.filter(user => user._id !== userId));  // Remove the deleted user from the state
-      })
-      .catch(error => {
-        console.error("There was an error deleting the user!", error);
-      });
+  const handleDelete = async (userId) => {
+    try {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/admin/users/delete/${userId}`);
+      setUsers(users.filter(user => user._id !== userId));  // Remove the deleted user from the state
+      alert("User deleted successfully!");
+    } catch (error) {
+      console.error("There was an error deleting the user!", error);
+      alert(`Failed to delete the user: ${error.response?.data?.message || error.message}`);
+    }
   };
 
   return (
@@ -65,7 +66,7 @@ function UsersPage() {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src={user.image ? `http://localhost:3000${user.image}` : "https://via.placeholder.com/150"}
+                    src={user.image ? `${process.env.REACT_APP_API_URL}${user.image}` : "https://via.placeholder.com/150"}
                     alt="User"
                   />
                 </td>

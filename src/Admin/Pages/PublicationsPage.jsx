@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-
 function PublicationsPage() {
   const [publications, setPublications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +38,6 @@ function PublicationsPage() {
   if (error) return <p>{error}</p>;
 
   return (
-  
     <div className="p-4">
       <h1 className="mb-4 py-4 text-sm text-center font-bold leading-none tracking-tight text-gray-900 md:text-2xl lg:text-3xl">
         Our
@@ -70,7 +68,7 @@ function PublicationsPage() {
               <td className="px-4 py-2 whitespace-nowrap">
                 <img
                   className="h-16 w-16 rounded"
-                  src={publication.pubImage}
+                  src={`${process.env.REACT_APP_API_URL}/images${publication.pubImage}`}
                   alt={publication.title}
                 />
               </td>
@@ -99,7 +97,6 @@ function PublicationsPage() {
         </tbody>
       </table>
     </div>
-    
   );
 }
 
