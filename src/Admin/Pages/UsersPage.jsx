@@ -66,7 +66,7 @@ function UsersPage() {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src={user.image ? `${process.env.REACT_APP_API_URL}${user.image}` : "https://via.placeholder.com/150"}
+                    src={`${process.env.REACT_APP_API_URL}/images${user.image}` ||  "https://via.placeholder.com/150"}
                     alt="User"
                   />
                 </td>

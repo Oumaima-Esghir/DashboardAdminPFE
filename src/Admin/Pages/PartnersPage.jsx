@@ -81,7 +81,7 @@ function PartnersPage() {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src={partner.image || "https://via.placeholder.com/150"} // Use a placeholder if image is missing
+                    src={`${process.env.REACT_APP_API_URL}/images${partner.image}`|| "https://via.placeholder.com/150"} // Use a placeholder if image is missing
                     alt="User"
                   />
                 </td>
