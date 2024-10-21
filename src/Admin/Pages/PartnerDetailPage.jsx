@@ -26,6 +26,11 @@ function PartnerDetailPage() {
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
+  // Construct the image URL
+  const partnerImageUrl = partner?.image
+    ? `${process.env.REACT_APP_API_URL}/images/${partner.image}`
+    : "https://via.placeholder.com/150";
+
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4"
@@ -47,7 +52,14 @@ function PartnerDetailPage() {
         </div>
         <div className="p-6">
           <div className="mb-4">
-            <p className="text-gray-700 font-semibold">Username:</p>
+            <img
+              className="h-20 w-20 rounded-full mx-auto mb-4"
+              src={partnerImageUrl}
+              alt="Partner"
+            />
+          </div>
+          <div className="mb-4">
+            <p className="text-gray-700 font-semibold">Name:</p>
             <p className="text-gray-900">{partner.name}</p>
           </div>
           <div className="mb-4">
